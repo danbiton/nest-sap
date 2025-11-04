@@ -18,9 +18,10 @@ export class WebhookController {
     verifyWebhook(@Query('validationToken') validationToken: string, @Res() res: Response) {
         if (validationToken) {
             this.logger.log(`Received validationToken: ${validationToken}`);
-            return res.status(200).send(validationToken);
+            res.status(200).send(validationToken); // ללא return
+            return;
         }
-        return res.status(200).send('OK');
+        res.status(200).send('OK');
     }
 
     @Post()
@@ -32,7 +33,7 @@ export class WebhookController {
             return { status: 'ignored' };
         }
 
-        if (!body && !body.value || !body.value.length) {
+        if (!body || !body.value || !body.value.length) {
             this.logger.log('No new messages in notification');
             return { status: 'ignored' };
         }
