@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Headers, Logger, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Logger, Post, Query, Res } from "@nestjs/common";
 import { GraphService } from "./graph.service";
-
+import type { Response } from "express";
 @Controller('webhook')
 
 export class WebhookController {
@@ -9,12 +9,12 @@ export class WebhookController {
     constructor(private readonly graphService: GraphService) { }
 
     @Get()
-    verifyWebhook(@Query('validationToken') validationToken: string) {
+    verifyWebhook(@Query('validationToken') validationToken: string, @Res() res: Response) {
         if (validationToken) {
             this.logger.log(`Received validationToken: ${validationToken}`);
-            return validationToken;
+            return res.status(200).send(validationToken);
         }
-        return 'No validationToken';
+        return res.status(200).send('OK');
     }
 
     @Post()
