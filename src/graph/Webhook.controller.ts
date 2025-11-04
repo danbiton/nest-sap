@@ -7,6 +7,12 @@ export class WebhookController {
 
     private readonly logger = new Logger(WebhookController.name)
     constructor(private readonly graphService: GraphService) { }
+    //  @Get('create-subscription')
+    // async triggerSubscription() {
+    //     // כאן הקריאה תתבצע רק אחרי שהשרת מוכן
+    //     const response = await this.graphService.createSubscription();
+    //     return response;
+    // }
 
     @Get()
     verifyWebhook(@Query('validationToken') validationToken: string, @Res() res: Response) {

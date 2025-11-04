@@ -14,11 +14,26 @@ export class GraphService {
         this.userEmail = process.env.USER_EMAIL || ''
     }
 
-    // async onModuleInit() {
-    //     console.log('Initializing Graph and creating subscription...');
-    //     await this.initGraphClient();
-    //     await this.createSubscription();
-    // }
+
+    async onApplicationBootstrap() {
+        this.logger.log('Application fully bootstrapped, initializing Graph client...');
+        try {
+            await this.initGraphClient();
+            this.logger.log('Graph client initialized, waiting for webhook validation...');
+            // אפשר לדחות יצירת subscription ב־timeout קצר כדי להיות בטוח שה־endpoint מוכן
+            setTimeout(async () => {
+                try {
+                    await this.createSubscription();
+                    this.logger.log('Subscription created successfully!');
+                } catch (error) {
+                    this.logger.error('Failed to create subscription', error);
+                }
+            }, 1000); // 1 שניה דיליי, אפשר להגדיל אם צריך
+        } catch (error) {
+            this.logger.error('Failed to initialize Graph client', error);
+        }
+    }
+
     async initGraphClient() {
         const tenantId = process.env.AZURE_TENANT_ID;
         const clientId = process.env.AZURE_CLIENT_ID;
@@ -203,7 +218,7 @@ export class GraphService {
         return response;
     }
     async createSubscription() {
-        if(!this.graphClient){
+        if (!this.graphClient) {
             await this.initGraphClient()
         }
         try {
