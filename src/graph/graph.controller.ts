@@ -20,7 +20,7 @@ export class GraphController {
     async getAllSap(){
         return this.graphService.getOpportunitiesSap()
     }
-    @Post('create-subscription')
+    @Get('create-subscription')
     async createSubscriptionManually() {
         const subscription = await this.graphService.createSubscription();
         return subscription;
