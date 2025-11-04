@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GraphController } from './graph.controller';
 import { GraphService } from './graph.service';
-import { WebhookController } from "./webhook.controller";
+import { WebhookController } from './webhook.controller';
 
 @Module({
   controllers: [GraphController, WebhookController],
