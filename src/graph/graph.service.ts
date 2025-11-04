@@ -4,10 +4,15 @@ import { Client } from "@microsoft/microsoft-graph-client"
 import { ClientSecretCredential } from '@azure/identity';
 import { OpportunityResponse } from './interface.res';
 import axios from 'axios';
+
 @Injectable()
 export class GraphService {
     private readonly logger = new Logger(GraphService.name);
+    private readonly userEmail: string;
     private graphClient: Client;
+    constructor(){
+        this.userEmail = process.env.USER_EMAIL || ''
+    }
 
     async initGraphClient() {
         const tenantId = process.env.AZURE_TENANT_ID;
@@ -34,7 +39,9 @@ export class GraphService {
         try {
             await this.initGraphClient();
             if (this.graphClient) {
-                const response = await this.graphClient.api('/users/Daniel.Biton@abra-it.com/mailFolders/SentItems/messages').get();
+                const response = await this.graphClient
+                .api(`/users/${this.userEmail}/mailFolders/SentItems/messages`)
+                .get();
                 return response.value;
             }
         } catch (err) {
@@ -183,6 +190,14 @@ export class GraphService {
             );
         }
     }
+    async getMessageById(messageId: string) {
+        await this.initGraphClient();
+        const response = await this.graphClient
+            .api(`/users/${this.userEmail}/messages/${messageId}`)
+            .get();
+        return response;
+    }
+
 
 
 
