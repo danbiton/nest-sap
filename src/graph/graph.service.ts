@@ -203,6 +203,9 @@ export class GraphService {
         return response;
     }
     async createSubscription() {
+        if(!this.graphClient){
+            await this.initGraphClient()
+        }
         try {
             const subscription = {
                 changeType: 'created',
