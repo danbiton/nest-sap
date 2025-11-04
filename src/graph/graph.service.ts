@@ -14,11 +14,11 @@ export class GraphService {
         this.userEmail = process.env.USER_EMAIL || ''
     }
 
-    async onModuleInit() {
-        console.log('Initializing Graph and creating subscription...');
-        await this.initGraphClient();
-        await this.createSubscription();
-    }
+    // async onModuleInit() {
+    //     console.log('Initializing Graph and creating subscription...');
+    //     await this.initGraphClient();
+    //     await this.createSubscription();
+    // }
     async initGraphClient() {
         const tenantId = process.env.AZURE_TENANT_ID;
         const clientId = process.env.AZURE_CLIENT_ID;
@@ -207,7 +207,7 @@ export class GraphService {
             const subscription = {
                 changeType: 'created',
                 notificationUrl: 'https://nest-sap.onrender.com/webhook',
-                resource: `/users/${this.userEmail}/mailFolders/SentItem//messages`,
+                resource: `/users/${this.userEmail}/mailFolders/SentItem/messages`,
                 expirationDateTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
                 clientState: 'secretClientValue',
             };

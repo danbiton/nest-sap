@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { GraphService } from './graph.service';
 
 @Controller('graph')
@@ -19,6 +19,11 @@ export class GraphController {
     @Get('sapSales')
     async getAllSap(){
         return this.graphService.getOpportunitiesSap()
+    }
+    @Post('create-subscription')
+    async createSubscriptionManually() {
+        const subscription = await this.graphService.createSubscription();
+        return subscription;
     }
     // @Get('subscription')
     // async createSubscription(){
