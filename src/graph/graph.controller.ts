@@ -20,6 +20,10 @@ export class GraphController {
     async getAllSap(){
         return this.graphService.getOpportunitiesSap()
     }
+    // @Get('subscription')
+    // async createSubscription(){
+    //     return this.graphService.createSubscription()
+    // }
     
    
 

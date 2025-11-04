@@ -10,10 +10,15 @@ export class GraphService {
     private readonly logger = new Logger(GraphService.name);
     private readonly userEmail: string;
     private graphClient: Client;
-    constructor(){
+    constructor() {
         this.userEmail = process.env.USER_EMAIL || ''
     }
 
+    async onModuleInit() {
+        console.log('Initializing Graph and creating subscription...');
+        await this.initGraphClient();
+        await this.createSubscription();
+    }
     async initGraphClient() {
         const tenantId = process.env.AZURE_TENANT_ID;
         const clientId = process.env.AZURE_CLIENT_ID;
@@ -40,8 +45,8 @@ export class GraphService {
             await this.initGraphClient();
             if (this.graphClient) {
                 const response = await this.graphClient
-                .api(`/users/${this.userEmail}/mailFolders/SentItems/messages`)
-                .get();
+                    .api(`/users/${this.userEmail}/mailFolders/SentItems/messages`)
+                    .get();
                 return response.value;
             }
         } catch (err) {
@@ -196,6 +201,24 @@ export class GraphService {
             .api(`/users/${this.userEmail}/messages/${messageId}`)
             .get();
         return response;
+    }
+    async createSubscription() {
+        try {
+            const subscription = {
+                changeType: 'created',
+                notificationUrl: 'https://nest-sap.onrender.com/webhook',
+                resource: `/users/${this.userEmail}/mailFolders/SentItem//messages`,
+                expirationDateTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+                clientState: 'secretClientValue',
+            };
+
+            const response = await this.graphClient.api('/subscriptions').post(subscription);
+            this.logger.log(` Subscription created: ${response.id}`);
+            return response;
+        } catch (error) {
+            this.logger.error(' Error creating subscription', error);
+            throw error;
+        }
     }
 
 
