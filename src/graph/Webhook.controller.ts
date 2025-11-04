@@ -18,43 +18,43 @@ export class WebhookController {
     verifyWebhook(@Query('validationToken') validationToken: string, @Res() res: Response) {
         if (validationToken) {
             this.logger.log(`Received validationToken: ${validationToken}`);
-            res.status(200).send(validationToken); // ללא return
+            res.status(200).send(validationToken); 
             return;
         }
         res.status(200).send('OK');
     }
 
     @Post()
-    async handleWebhook(@Body() body: any, @Headers('clientstate') clientState: string) {
+    async handleWebhook(@Body() body: any) {
         this.logger.log('Received webhook notification', JSON.stringify(body));
       
-        if (clientState && clientState !== 'secretClientValue') {
+        if (body?.value?.clientState && body?.value?.clientState !== 'secretClientValue') {
             this.logger.warn('Invalid clientState, ignoring notification');
             return { status: 'ignored' };
         }
 
-        if (!body || !body.value || !body.value.length) {
-            this.logger.log('No new messages in notification');
-            return { status: 'ignored' };
-        }
+        // if (!body || !body.value || !body.value.length) {
+        //     this.logger.log('No new messages in notification');
+        //     return { status: 'ignored' };
+        // }
 
-        for (const notification of body.value) {
+        // for (const notification of body.value) {
             
-            const messageId = notification.resourceData?.id;
-            if (!messageId) continue;
+        //     const messageId = notification.resourceData?.id;
+        //     if (!messageId) continue;
 
-            const message:any = await this.graphService.getMessageById(messageId);
+        //     const message:any = await this.graphService.getMessageById(messageId);
 
-            if (!message?.subject?.toLowerCase().includes('order')) {
-                this.logger.log('Email subject does not contain "order", ignoring.');
-                continue;
-            }
+        //     if (!message?.subject?.toLowerCase().includes('order')) {
+        //         this.logger.log('Email subject does not contain "order", ignoring.');
+        //         continue;
+        //     }
 
-            this.logger.log('Email subject contains "order", processing SAP opportunities...');
-            await this.graphService.getOpportunitiesSap();
-        }
+        //     this.logger.log('Email subject contains "order", processing SAP opportunities...');
+        //     await this.graphService.getOpportunitiesSap();
+        // }
 
-        return { status: 'processed' };
+        return body;
     }
 
 }
