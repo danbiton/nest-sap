@@ -26,7 +26,7 @@ export class WebhookController {
             return { status: 'ignored' };
         }
 
-        if (!body.value || !body.value.length) {
+        if (!body && !body.value || !body.value.length) {
             this.logger.log('No new messages in notification');
             return { status: 'ignored' };
         }
