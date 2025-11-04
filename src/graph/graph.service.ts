@@ -15,24 +15,24 @@ export class GraphService {
     }
 
 
-    async onApplicationBootstrap() {
-        this.logger.log('Application fully bootstrapped, initializing Graph client...');
-        try {
-            await this.initGraphClient();
-            this.logger.log('Graph client initialized, waiting for webhook validation...');
-            // אפשר לדחות יצירת subscription ב־timeout קצר כדי להיות בטוח שה־endpoint מוכן
-            setTimeout(async () => {
-                try {
-                    await this.createSubscription();
-                    this.logger.log('Subscription created successfully!');
-                } catch (error) {
-                    this.logger.error('Failed to create subscription', error);
-                }
-            }, 1000); // 1 שניה דיליי, אפשר להגדיל אם צריך
-        } catch (error) {
-            this.logger.error('Failed to initialize Graph client', error);
-        }
-    }
+    // async onApplicationBootstrap() {
+    //     this.logger.log('Application fully bootstrapped, initializing Graph client...');
+    //     try {
+    //         await this.initGraphClient();
+    //         this.logger.log('Graph client initialized, waiting for webhook validation...');
+    //         // אפשר לדחות יצירת subscription ב־timeout קצר כדי להיות בטוח שה־endpoint מוכן
+    //         setTimeout(async () => {
+    //             try {
+    //                 await this.createSubscription();
+    //                 this.logger.log('Subscription created successfully!');
+    //             } catch (error) {
+    //                 this.logger.error('Failed to create subscription', error);
+    //             }
+    //         }, 1000); // 1 שניה דיליי, אפשר להגדיל אם צריך
+    //     } catch (error) {
+    //         this.logger.error('Failed to initialize Graph client', error);
+    //     }
+    // }
 
     async initGraphClient() {
         const tenantId = process.env.AZURE_TENANT_ID;
